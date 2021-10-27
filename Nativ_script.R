@@ -10,10 +10,22 @@ lapply(pkg_list, function(p) {require(p,
                                       character.only = TRUE,
                                       quietly=TRUE)})
 
+#' Load functions
+source("functions.R")
 
-Data_dir <- "C:\\Users\\asaf_rs\\Desktop\\wind\\Wind_proj\\stations\\IMS\\Nativ\\try"
+# Set Directory of raw data files
+# Data_dir <- "C:\\Users\\asaf_rs\\Desktop\\wind\\Wind_proj\\stations\\IMS"
+Data_dir <- "/media/micha/Storage_8TB/Data/IMS/Wind_proj/stations/IMS"
+stations <- dir(Data_dir)
 
-IMS_merged <- LoadIMSData(Data_dir)
+# Work on each IMS station separately
+station_data_list <- lapply(stations, function(stn){
+  # Now read all years of data from one station, and merge
+  IMS_merged <- LoadIMSData(file.path(Data_dir, stn), stn)
+  # Further analyses, wrapped in functions ...
+  
+})
+
 
 # Nativ = lapply(my_files, function(i){
 # x = read.csv(i)
@@ -33,7 +45,3 @@ IMS_merged <- LoadIMSData(Data_dir)
 # ## set numeric columns
 # Nativ[,3:13] = apply(Nativ[3:13],2,function(x) as.numeric(as.character(x)))
 # 
-str(IMS_merged)
-# write.csv(Nativ, file = "Nativ.csv")
-# 
-
