@@ -20,7 +20,7 @@ IMS_merged <- LoadIMSData(Data_dir)
 str(IMS_merged)
 
 
-write.csv(ims_wind, file = "Negba_station.csv")
+write.csv(ims_wind, file = "Dorot_station.csv")
 
 
 

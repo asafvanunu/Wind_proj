@@ -6,7 +6,6 @@ library(lubridate)
 
 setwd("C:\\Users\\asaf_rs\\Desktop\\wind\\Wind_proj\\stations\\IMS\\Negba")
 
-
 ## merging multiyear data
 my_files <- list.files(pattern = "*.csv")
 
