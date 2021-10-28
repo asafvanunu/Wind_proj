@@ -52,9 +52,6 @@ ims_wind <- ims_wind[, c(1,2,14,3,4,5,6,7,8,9,10,11,12,13)]
 
 write.csv(ims_wind, file = "Nativ_station.csv")
 
-
-
-=======
 #' Required packages
 #' Check for installed packages, and install if needed
 pkg_list <- c("tidyverse", "data.table", "lubridate")
@@ -67,10 +64,22 @@ lapply(pkg_list, function(p) {require(p,
                                       character.only = TRUE,
                                       quietly=TRUE)})
 
+#' Load functions
+source("functions.R")
 
-Data_dir <- "C:\\Users\\asaf_rs\\Desktop\\wind\\Wind_proj\\stations\\IMS\\Nativ\\try"
+# Set Directory of raw data files
+# Data_dir <- "C:\\Users\\asaf_rs\\Desktop\\wind\\Wind_proj\\stations\\IMS"
+Data_dir <- "/media/micha/Storage_8TB/Data/IMS/Wind_proj/stations/IMS"
+stations <- dir(Data_dir)
 
-IMS_merged <- LoadIMSData(Data_dir)
+# Work on each IMS station separately
+station_data_list <- lapply(stations, function(stn){
+  # Now read all years of data from one station, and merge
+  IMS_merged <- LoadIMSData(file.path(Data_dir, stn), stn)
+  # Further analyses, wrapped in functions ...
+  
+})
+
 
 # Nativ = lapply(my_files, function(i){
 # x = read.csv(i)
@@ -89,9 +98,11 @@ IMS_merged <- LoadIMSData(Data_dir)
 # Nativ$Hour_LST = as.ITime(Nativ$Hour_LST)
 # ## set numeric columns
 # Nativ[,3:13] = apply(Nativ[3:13],2,function(x) as.numeric(as.character(x)))
-# 
+#
+
 str(IMS_merged)
 # write.csv(Nativ, file = "Nativ.csv")
 # 
->>>>>>> 72441b9ba0c8444ba89e64afa356db83b507e0c7
+
+
 
