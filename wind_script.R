@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 install.packages("tidyverse")
 install.packages("data.table")
 library(tidyverse)
@@ -69,7 +68,7 @@ source("functions.R")
 
 # Set Directory of raw data files
 # Data_dir <- "C:\\Users\\asaf_rs\\Desktop\\wind\\Wind_proj\\stations\\IMS"
-Data_dir <- "/media/micha/Storage_8TB/Data/IMS/Wind_proj/stations/IMS"
+Data_dir <- "C:\\Users\\asaf_rs\\Desktop\\wind\\Wind_proj\\stations\\IMS"
 stations <- dir(Data_dir)
 
 # Work on each IMS station separately

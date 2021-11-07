@@ -17,7 +17,7 @@ LoadIMSData <- function(data_path, station_name) {
     ims_wind[,3:13] = apply(ims_wind[3:13], 2,
                             function(x) as.numeric(as.character(x)))
     ims_wind$station = station_name
-    return(ims_wind)
+    return(ims_wind[,2:ncol(ims_wind)])
   })
   ims_data <- do.call(rbind, ims_data_list)
   return(ims_data)
