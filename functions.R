@@ -5,7 +5,7 @@ LoadIMSData <- function(data_path, station_name) {
   #' Return merged data frame
   ims_file_list = list.files(data_path, pattern=".csv$", full.names = TRUE)
   ims_data_list = lapply(ims_file_list, function(f) {
-    ims_wind = read_csv(f, show_col_types = FALSE)
+    ims_wind = fread(file=f, na.string=c("-",""),)
     # Read in with hour as LST where GMT is 2 hours behind
     ims_wind$date_time = as_datetime(paste(ims_wind$Date, ims_wind$Hour_LST),
                                      format = "%d/%m/%Y %H:%M",
@@ -14,8 +14,8 @@ LoadIMSData <- function(data_path, station_name) {
     ims_wind$date_time = as_datetime(ims_wind$date_time, tz = "UTC") 
     # Some columns input as character because of '-' or other non-numeric
     # Force all to be numeric (Some will become NA)
-    ims_wind[,3:13] = apply(ims_wind[3:13], 2,
-                            function(x) as.numeric(as.character(x)))
+    # ims_wind[,3:13] = apply(ims_wind[3:13], 2,
+    #                         function(x) as.numeric(as.character(x)))
     ims_wind$station = station_name
     return(ims_wind)
   })
