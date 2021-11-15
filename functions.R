@@ -5,7 +5,7 @@ LoadIMSData <- function(data_path, station_name) {
   #' Return merged data frame
   ims_file_list = list.files(data_path, pattern=".csv$", full.names = TRUE)
   ims_data_list = lapply(ims_file_list, function(f) {
-    ims_wind = read.csv(f)
+    ims_wind = read_csv(f, show_col_types = FALSE)
     # Read in with hour as LST where GMT is 2 hours behind
     ims_wind$date_time = as_datetime(paste(ims_wind$Date, ims_wind$Hour_LST),
                                      format = "%d/%m/%Y %H:%M",
@@ -21,4 +21,24 @@ LoadIMSData <- function(data_path, station_name) {
   })
   ims_data <- do.call(rbind, ims_data_list)
   return(ims_data)
+}
+
+PlotWindrose <- function (station_data) {
+  #Input data.table of stations
+  # Select only gust speed, and direction columns
+  # Rename those columns
+  wind_df <- select(station_data, station, WS_UpperGust_ms, WD_UpperGust_degrees)
+  names(wind_df) <- c("station_name", "wind_speed", "wind_direction")
+  # What to do with wind direction < 0 ??
+  wind_df$wind_direction[which(wind_df$wind_direction<0)] <- NA
+  rose_plot = clifro::windrose(speed = wind_df$wind_speed,
+                             direction = wind_df$wind_direction,
+                             facet = wind_df$station_name, 
+                             col_pal = "YlOrRd", n_col = 3,
+                             n_speeds = 7,
+                             legend_title = "מהירות רוח [מטר/שנייה]",
+                             strip.text = element_text(size=12, face="bold"),
+                             plot.title = element_text(size=14, face="bold", hjust = 0.5))
+  
+  print(rose_plot)
 }

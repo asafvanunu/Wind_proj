@@ -1,6 +1,8 @@
 #' Required packages
 #' Check for installed packages, and install if needed
-pkg_list <- c("tidyverse", "data.table", "lubridate")
+pkg_list <- c("tidyverse", "data.table", "readr", # fast reading of CSV
+              "lubridate",                        # date processing
+              "clifro")                           # wind rose
 installed_packages <- pkg_list %in% rownames(installed.packages())
 if (any(installed_packages == FALSE)) {
   install.packages(pkg_list[!installed_packages])
@@ -25,7 +27,9 @@ station_data_list <- lapply(stations, function(stn){
   # Further analyses, wrapped in functions ...
   
 })
+station_data <- do.call(rbind, station_data_list)
 
+PlotWindrose(station_data)
 
 # Nativ = lapply(my_files, function(i){
 # x = read.csv(i)
