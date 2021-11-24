@@ -51,11 +51,30 @@ PlotWindrose <- function (station_data) {
 
 extreme_value = function (IMS_merged,stn) {
     max_gust_year = IMS_merged %>%
-      group_by(year = floor_date(date_time, "year")) %>%
+      group_by(date_time = floor_date(date_time, "year")) %>%
       summarize(mean_WS_ms = mean(WS_ms, na.rm=T),
               max_WS_ms=max(WS_ms,na.rm=T),
               mean_Gust_ms = mean(WS_UpperGust_ms,na.rm=T),
               max_gust_ms=max(WS_UpperGust_ms,na.rm=T))
+    
+    yrs <- unique(year(max_gust_year$date_time))
+    max_gust_year <- lapply(yrs, function(y) {
+      IMS_merged_yr <- IMS_merged[year(IMS_merged$date_time) == y,]
+      max_gust_value <- max_gust_year$max_gust_ms[
+        year(max_gust_year$date_time) == y]
+      IMS_merged_max <- IMS_merged_yr[
+        IMS_merged_yr$WS_UpperGust_ms == max_gust_value,]
+      if(nrow(IMS_merged_max) == 1) {
+        max_gust_year$max_date_time <- IMS_merged_max$date_time
+        max_gust_year$compass <- IMS_merged_max$compass
+        return(max_gust_year)
+      } else {
+        # What if there is more than one date_time with same max value?
+        print(paste("Number of rows:", 
+                    nrow(IMS_merged_max), "in year:", y))
+        return(NULL)
+      }
+    })
     
     fit = fevd(max_gust_year$max_gust_ms, data=max_gust_year,
                type = "GEV"
@@ -66,3 +85,5 @@ extreme_value = function (IMS_merged,stn) {
     plot(fit, main = stn )
     
 }
+
+
