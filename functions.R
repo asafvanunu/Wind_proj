@@ -2,7 +2,7 @@ LoadIMSData <- function(data_path, station_name) {
   #' Read all CSV files in a directory,
   #' Parse date and time (LST time zone)
   #' Convert to UTC time zone
-  #' Return merged data frame
+  #' Return merged data frame from a single station
   ims_file_list = list.files(data_path, pattern=".csv$", full.names = TRUE)
   ims_data_list = lapply(ims_file_list, function(f) {
     ims_wind = fread(file=f, na.string=c("-",""),)
@@ -25,6 +25,9 @@ LoadIMSData <- function(data_path, station_name) {
     return(ims_wind[,2:ncol(ims_wind)])
   })
   ims_data <- do.call(rbind, ims_data_list)
+  ims_data <- ims_data[!is.na(ims_data$WS_UpperGust_ms),]
+  ims_data_zoo <- zoo(ims_data$WS_UpperGust_ms, ims_data$date_time)
+  ims_data$Gust_ma <- rollmean(ims_data_zoo,3, fill = NA)
   return(ims_data)
 }
 
@@ -50,31 +53,39 @@ PlotWindrose <- function (station_data) {
 }
 
 extreme_value = function (IMS_merged,stn) {
-    max_gust_year = IMS_merged %>%
+    max_gust_per_year = IMS_merged %>%
       group_by(date_time = floor_date(date_time, "year")) %>%
       summarize(mean_WS_ms = mean(WS_ms, na.rm=T),
               max_WS_ms=max(WS_ms,na.rm=T),
               mean_Gust_ms = mean(WS_UpperGust_ms,na.rm=T),
               max_gust_ms=max(WS_UpperGust_ms,na.rm=T))
     
-    yrs <- unique(year(max_gust_year$date_time))
-    max_gust_year <- lapply(yrs, function(y) {
+    yrs <- unique(year(max_gust_per_year$date_time))
+    max_gust_list <- lapply(yrs, function(y) {
       IMS_merged_yr <- IMS_merged[year(IMS_merged$date_time) == y,]
-      max_gust_value <- max_gust_year$max_gust_ms[
-        year(max_gust_year$date_time) == y]
+      max_gust_value <- max_gust_per_year$max_gust_ms[
+        year(max_gust_per_year$date_time) == y]
       IMS_merged_max <- IMS_merged_yr[
         IMS_merged_yr$WS_UpperGust_ms == max_gust_value,]
       if(nrow(IMS_merged_max) == 1) {
-        max_gust_year$max_date_time <- IMS_merged_max$date_time
-        max_gust_year$compass <- IMS_merged_max$compass
-        return(max_gust_year)
+        max_yearly <- data.frame(
+          "date_time" = IMS_merged_max$date_time,
+          "compass" = IMS_merged_max$compass,
+          "max_gust" = IMS_merged_max$WS_UpperGust_ms) 
       } else {
         # What if there is more than one date_time with same max value?
         print(paste("Number of rows:", 
                     nrow(IMS_merged_max), "in year:", y))
-        return(NULL)
+        IMS_merged_max <- IMS_merged_max[which.max(IMS_merged_max$Gust_ma),]
+        max_yearly <- data.frame(
+         "date_time" = IMS_merged_max$date_time,
+         "compass" = IMS_merged_max$compass,
+         "max_gust" = IMS_merged_max$WS_UpperGust_ms) 
       }
+      return(max_yearly)
     })
+    
+    max_gust_year <- do.call(rbind, max_gust_list)
     
     fit = fevd(max_gust_year$max_gust_ms, data=max_gust_year,
                type = "GEV"

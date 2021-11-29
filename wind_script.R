@@ -3,7 +3,7 @@
 pkg_list <- c("tidyverse", "data.table", "readr", # fast reading of CSV
               "lubridate",                        # date processing
               "clifro",
-              "extRemes")                           # wind rose
+              "extRemes", "zoo")                           # wind rose
 installed_packages <- pkg_list %in% rownames(installed.packages())
 if (any(installed_packages == FALSE)) {
   install.packages(pkg_list[!installed_packages])
