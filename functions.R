@@ -88,13 +88,12 @@ extreme_value = function (IMS_merged,stn) {
     
     max_gust_year <- do.call(rbind, max_gust_list)
     
-    fit = fevd(max_gust_year$max_gust_ms, data=max_gust_year,
-               type = "GEV"
-               )
+    fit = fevd(max_gust_year$max_gust, data=max_gust_year, type = "GEV",
+               scale.fun = ~max_gust_year$compass)
     
     return_level = return.level(fit)
     return_level
-    plot(fit, main = stn )
+    plot(fit, main = stn)
     
 }
 
