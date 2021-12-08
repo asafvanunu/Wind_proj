@@ -3,6 +3,7 @@ LoadIMSData <- function(data_path, station_name) {
   #' Parse date and time (LST time zone)
   #' Convert to UTC time zone
   #' Return merged data frame from a single station
+
   ims_file_list = list.files(data_path, pattern=".csv$", full.names = TRUE)
   ims_data_list = lapply(ims_file_list, function(f) {
     ims_wind = fread(file=f, na.string=c("-",""),)
