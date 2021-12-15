@@ -42,7 +42,7 @@ station_data_list <- lapply(stations, function(stn){
   extreme_value_month(station_df, stn)
 })
 PlotWindrose(station_data)
-
+#
 
 
 
