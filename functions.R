@@ -147,4 +147,3 @@ extreme_value_month = function (IMS_merged,stn) {
   plot(fit_month, main = stn)
   
 }
-#
