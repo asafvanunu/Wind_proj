@@ -140,7 +140,7 @@ extreme_value_month = function (IMS_merged,stn) {
   
   fit_month <- 
     fevd(max_gust_year_month$max_gust, data=max_gust_year_month, type = "GEV",
-             scale.fun = ~max_gust_year$compass)
+             scale.fun = ~max_gust_year_month$compass)
   
   return_level_months = return.level(fit_month)
   return_level_months
