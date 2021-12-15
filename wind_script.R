@@ -39,6 +39,7 @@ if (file.exists(file.path(Data_dir,"station_data.rds"))) {
 station_data_list <- lapply(stations, function(stn){
   station_df <- station_data[station==stn,]
   extreme_value(station_df, stn)
+  extreme_value_month(station_df, stn)
 })
 PlotWindrose(station_data)
 

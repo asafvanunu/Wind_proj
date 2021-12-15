@@ -97,4 +97,53 @@ extreme_value = function (IMS_merged,stn) {
     
 }
 
+## max gust and compass for each month
 
+extreme_value_month = function (IMS_merged,stn) {
+  max_gust_per_month <- IMS_merged %>%
+    group_by(date_time = floor_date(date_time, "month"))%>%
+    summarize(mean_WS_ms = mean(WS_ms, na.rm=T),
+              max_WS_ms=max(WS_ms,na.rm=T),
+              mean_Gust_ms = mean(WS_UpperGust_ms,na.rm=T),
+              max_gust_ms=max(WS_UpperGust_ms,na.rm=T))
+  
+  unique(format_ISO8601(max_gust_per_month$date_time, precision = "ym"))
+  
+  yrs_months <- unique(format_ISO8601(max_gust_per_month$date_time, precision = "ym"))
+  max_gust_year_month_list <- lapply(yrs_months, function(ym) {
+    IMS_merged_yr_mo <- 
+      IMS_merged[format_ISO8601(IMS_merged$date_time, precision = "ym") == ym,]
+    max_gust_value_yr_mo <- max_gust_per_month$max_gust_ms[
+      format_ISO8601(max_gust_per_month$date_time, precision = "ym") == ym]
+    IMS_merged_max_yr_mo <- IMS_merged_yr_mo[
+      IMS_merged_yr_mo$WS_UpperGust_ms == max_gust_value_yr_mo,]
+    if(nrow(IMS_merged_max_yr_mo) == 1) {
+      max_yearly_month <- data.frame(
+        "date_time" = IMS_merged_max_yr_mo$date_time,
+        "compass" = IMS_merged_max_yr_mo$compass,
+        "max_gust" = IMS_merged_max_yr_mo$WS_UpperGust_ms) 
+    } else {
+      # What if there is more than one date_time with same max value?
+      print(paste("Number of rows:", 
+                  nrow(IMS_merged_max_yr_mo), "in year and month:", ym))
+      IMS_merged_max_yr_mo <- 
+        IMS_merged_max_yr_mo[which.max(IMS_merged_max_yr_mo$Gust_ma),]
+      max_yearly_month <- data.frame(
+        "date_time" = IMS_merged_max_yr_mo$date_time,
+        "compass" = IMS_merged_max_yr_mo$compass,
+        "max_gust" = IMS_merged_max_yr_mo$WS_UpperGust_ms) 
+    }
+    return(max_yearly_month)
+  })
+  
+  max_gust_year_month <- do.call(rbind, max_gust_year_month_list)
+  
+  fit_month <- 
+    fevd(max_gust_year_month$max_gust, data=max_gust_year_month, type = "GEV",
+             scale.fun = ~max_gust_year$compass)
+  
+  return_level_months = return.level(fit_month)
+  return_level_months
+  plot(fit_month, main = stn)
+  
+}
