@@ -20,7 +20,7 @@ LoadIMSData <- function(data_path, station_name) {
     ims_wind <- filter(ims_wind, year(date_time) >= 2000)
     ims_wind$WD_UpperGust_degrees[ims_wind$WD_UpperGust_degrees <0] <- NA
     ims_wind$WD_UpperGust_degrees[ims_wind$WD_UpperGust_degrees  == 360] <- 0
-    ims_wind$compass <- as.integer(ims_wind$WD_UpperGust_degrees/45)+1
+    ims_wind$compass <- as.integer(ims_wind$WD_UpperGust_degrees/90)+1
     
     ims_wind$station = station_name
     return(ims_wind[,2:ncol(ims_wind)])
@@ -89,11 +89,11 @@ extreme_value = function (IMS_merged,stn) {
     max_gust_year <- do.call(rbind, max_gust_list)
     
     fit = fevd(max_gust_year$max_gust, data=max_gust_year, type = "GEV",
-               scale.fun = ~max_gust_year$compass)
-    
-    return_level = return.level(fit)
+               location.fun = ~max_gust_year$compass)
+    v_year <- make.qcov(fit, vals = list(mu1 = c(1:4)))
+    return_level = return.level(fit, return.period = c(10,20,50), qcov = v_year)
     return_level
-    plot(fit, main = stn)
+    plot(fit, main = stn, rperiods = c(10,20,50))
     
 }
 
@@ -140,10 +140,11 @@ extreme_value_month = function (IMS_merged,stn) {
   
   fit_month <- 
     fevd(max_gust_year_month$max_gust, data=max_gust_year_month, type = "GEV",
-             scale.fun = ~max_gust_year_month$compass)
-  
-  return_level_months = return.level(fit_month)
+             location.fun = ~max_gust_year_month$compass)
+  v_year <- make.qcov(fit_month, vals = list(mu1 = c(1:4)))
+  return_level_months = return.level(fit_month, return.period = c(10,20,50),
+  qcov = v)
   return_level_months
-  plot(fit_month, main = stn)
+  plot(fit_month, main = stn, rperiods = c(10,20,50))
   
 }
