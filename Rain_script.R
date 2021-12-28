@@ -71,3 +71,10 @@ mean_rain_feb_mar <- function(stn_name){
     summarize(mean_rain = mean(Month_precipitation_mm, na.rm=T))
 }
 
+max_rain <- function(stn_name){
+  stn_name%>%
+    group_by(Date = floor_date(Date, "year"))%>%
+    summarize(max_rain = max(Month_precipitation_mm, na.rm=T))
+}
+
+
