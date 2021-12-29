@@ -1,3 +1,6 @@
+Lac_path <- "C:\\Users\\asaf_rs\\Desktop\\wind\\Wind_proj\\stations\\IMS\\Lachish"
+Name <- "Lachish"
+
 LoadIMSData_lac <- function(data_path, station_name) {
   #' Read all CSV files in a directory,
   #' Parse date and time (LST time zone)
@@ -31,3 +34,5 @@ LoadIMSData_lac <- function(data_path, station_name) {
   ims_data$Gust_ma <- rollmean(ims_data_zoo,3, fill = NA)
   return(ims_data)
 }
+
+Lachish <- LoadIMSData_lac(Lac_path, Name)
