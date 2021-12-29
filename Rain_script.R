@@ -31,39 +31,9 @@ mean_rain <- function(stn_name){
   group_by(Date = floor_date(Date, "year"))%>%
   summarize(mean_rain = mean(Month_precipitation_mm, na.rm=T))
 }
-#mean calc
-Gat_mean <- mean_rain(rain_station_data_list[[2]])
-Galon_mean <- mean_rain(rain_station_data_list[[1]])
-Jamal_mean <- mean_rain(rain_station_data_list[[3]])
-Jovrin_mean <- mean_rain(rain_station_data_list[[4]])
-Nativ_mean <- mean_rain(rain_station_data_list[[5]])
-
-fit = fevd(Gat_mean$mean_rain, data=Gat_mean, type = "GEV")
-return_level = return.level(fit, return.period = c(10,20,50))
-return_level
-plot(fit, main = "Gat", rperiods = c(10,20,50))
-
-fit = fevd(Jovrin_mean$mean_rain, data=Jovrin_mean, type = "GEV")
-return_level = return.level(fit, return.period = c(10,20,50))
-return_level
-plot(fit, main = "Jovrin", rperiods = c(10,20,50))
-
-fit = fevd(Galon_mean$mean_rain, data=Galon_mean, type = "GEV")
-return_level = return.level(fit, return.period = c(10,20,50))
-return_level
-plot(fit, main = "Galon", rperiods = c(10,20,50))
-
-fit = fevd(Nativ_mean$mean_rain, data=Nativ_mean, type = "GEV")
-return_level = return.level(fit, return.period = c(10,20,30))
-return_level
-plot(fit, main = "Nativ", rperiods = c(10,20,30))
-
-fit = fevd(Jamal_mean$mean_rain, data=Jamal_mean, type = "GEV")
-return_level = return.level(fit, return.period = c(10,20,50))
-return_level
-plot(fit, main = "Jamal", rperiods = c(10,20,50))
 
 
+## Mean rain for feb and mar
 mean_rain_feb_mar <- function(stn_name){
   stn_name%>%
     filter(month(Date) <=3 & month(Date)>=2)%>%
@@ -71,10 +41,78 @@ mean_rain_feb_mar <- function(stn_name){
     summarize(mean_rain = mean(Month_precipitation_mm, na.rm=T))
 }
 
+## max rain for each year
 max_rain <- function(stn_name){
   stn_name%>%
     group_by(Date = floor_date(Date, "year"))%>%
     summarize(max_rain = max(Month_precipitation_mm, na.rm=T))
 }
 
+jan_rain <- function(stn_name){
+  stn_name%>%
+    filter(month(Date) ==1)
+}
+
+feb_rain <- function(stn_name){
+  stn_name%>%
+    filter(month(Date) ==2)
+}
+
+mar_rain <- function(stn_name){
+  stn_name%>%
+    filter(month(Date) ==3)
+}
+
+#max calc
+Gat_max <- max_rain(rain_station_data_list[[2]])
+Galon_max <- max_rain(rain_station_data_list[[1]])
+Jamal_max <- max_rain(rain_station_data_list[[3]])
+Jovrin_max <- max_rain(rain_station_data_list[[4]])
+Nativ_max <- max_rain(rain_station_data_list[[5]])
+
+##jan rain for each year
+Gat_jan <- jan_rain(rain_station_data_list[[2]])
+Galon_jan <- jan_rain(rain_station_data_list[[1]])
+Jamal_jan <- jan_rain(rain_station_data_list[[3]])
+Jovrin_jan <- jan_rain(rain_station_data_list[[4]])
+Nativ_jan <- jan_rain(rain_station_data_list[[5]])
+##feb rain for each year
+Gat_feb <- feb_rain(rain_station_data_list[[2]])
+Galon_feb <- feb_rain(rain_station_data_list[[1]])
+Jamal_feb <- feb_rain(rain_station_data_list[[3]])
+Jovrin_feb <- feb_rain(rain_station_data_list[[4]])
+Nativ_feb <- feb_rain(rain_station_data_list[[5]])
+##mar rain for each year
+Gat_mar <- mar_rain(rain_station_data_list[[2]])
+Galon_mar <- mar_rain(rain_station_data_list[[1]])
+Jamal_mar <- mar_rain(rain_station_data_list[[3]])
+Jovrin_mar <- mar_rain(rain_station_data_list[[4]])
+Nativ_mar <- mar_rain(rain_station_data_list[[5]])
+
+## extreme model for each station
+fit = fevd(Gat_max$max_rain, data=Gat_max, type = "GEV")
+return_level = return.level(fit, return.period = c(15,20,30))
+return_level
+plot(fit, main = "Gat", rperiods = c(15,20,30))
+
+
+fit = fevd(Jovrin_max$max_rain, data=Jovrin_max, type = "GEV")
+return_level = return.level(fit, return.period = c(15,20,30))
+return_level
+plot(fit, main = "Jovrin", rperiods = c(15,20,30))
+
+fit = fevd(Galon_max$max_rain, data=Galon_max, type = "GEV")
+return_level = return.level(fit, return.period = c(15,20,30))
+return_level
+plot(fit, main = "Galon", rperiods = c(15,20,30))
+
+fit = fevd(Nativ_max$max_rain, data=Nativ_max, type = "GEV")
+return_level = return.level(fit, return.period = c(15,20,30))
+return_level
+plot(fit, main = "Nativ", rperiods = c(15,20,30))
+
+fit = fevd(Jamal_max$max_rain, data=Jamal_max, type = "GEV")
+return_level = return.level(fit, return.period = c(15,20,30))
+return_level
+plot(fit, main = "Jamal", rperiods = c(15,20,30))
 
