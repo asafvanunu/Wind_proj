@@ -3,3 +3,7 @@
 .RData
 .Ruserdata
 stations
+Rain
+station_data.rds
+Dorot_script.R
+Negba_script.R
