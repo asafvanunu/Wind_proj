@@ -116,3 +116,24 @@ return_level = return.level(fit, return.period = c(15,20,30))
 return_level
 plot(fit, main = "Jamal", rperiods = c(15,20,30))
 
+
+
+#save data_function - left join for getting the exact month of event
+save_rain <- data <- function(stn_x,stn_y){
+  j <- left_join(stn_x, stn_y,
+                   by = c("max_rain"="Month_precipitation_mm"))
+  j <- j[,c(2,3,5)]
+  j <- j[,c(2,3,1)]
+  j <- j[order(-j$max_rain),]
+  write.csv(j,
+paste("C:\\Users\\asaf_rs\\Desktop\\wind\\output\\max_rain\\"
+,as.character(j[1,1]),".csv"))
+        
+   }
+
+##save the data
+save_rain(Gat_max, rain_station_data_list[[2]])
+save_rain(Galon_max,rain_station_data_list[[1]])
+save_rain(Jovrin_max,rain_station_data_list[[4]])
+save_rain(Nativ_max,rain_station_data_list[[5]])
+
