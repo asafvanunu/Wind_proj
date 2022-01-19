@@ -8,6 +8,7 @@ LoadIMSData <- function(data_path, station_name) {
   ims_data_list = lapply(ims_file_list, function(f) {
     ims_wind = fread(file=f, na.string=c("-",""),)
     # Read in with hour as LST where GMT is 2 hours behind
+    ims_wind$Date = gsub('-','/',ims_wind$Date)
     ims_wind$date_time = as_datetime(paste(ims_wind$Date, ims_wind$Hour_LST),
                                      format = "%d/%m/%Y %H:%M",
                                      tz = "Etc/GMT-2")
