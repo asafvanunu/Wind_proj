@@ -37,7 +37,7 @@ max_besor_wind[which(max_besor_wind$Date%in%besor_rainy_match$Date),]
 ## testing correlation
 cor(besor_max_wind_match$max_gust, besor_rainy_match$mean_rain)
 
-## i tried to create a genreal fuction for this correlation
+## i tried to create a general function for this correlation
 correlation <- function(wind_stn, rain_stn){
   
   mean_rain_stn <- mean_rain(rain_stn)
