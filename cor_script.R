@@ -8,12 +8,17 @@ mean_rain <- function(stn_name){
 }
 ## max function for wind <-  only during winter periods grouping for each year
 max_wind <- function(stn_name){
-  stn_name%>%
+  x <- stn_name%>%
     filter(month(date_time) ==3 | month(date_time)==2 | 
     month(date_time)==1 | month(date_time)==11 | 
-    month(date_time)==12)%>%
-    group_by(Date = floor_date(date_time, "year"))%>%
+    month(date_time)==12)
+  ##Group by winter seasons!
+  x$winter_year <- ifelse(month(x$date_time) %in% c(11,12),year(x$date_time)+1,year(x$date_time)) %>% data.table::rleidv()
+  ## ask micha what he thinks
+    x <- x%>%
+    group_by(Date_season = winter_year)%>%
     summarize(max_gust = max(WS_UpperGust_ms, na.rm=T))
+    return(x)
 }
 
 ## I took "Besor" station as an example,
@@ -60,3 +65,12 @@ correlation <- function(wind_stn, rain_stn){
 
 ##try
 correlation(station_data_list[[1]], rain_station_data_list[[1]])
+
+
+
+
+
+
+
+
+
