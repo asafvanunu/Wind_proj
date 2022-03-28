@@ -18,7 +18,7 @@ source("functions.R")
 
 # Set Directory of raw data files
 # Data_dir <- "C:\\Users\\asaf_rs\\Desktop\\wind\\Wind_proj\\stations\\IMS"
-base_dir <- "C:\\Users\\asaf_rs\\Desktop\\wind\\Wind_proj"
+base_dir <- "C:\\Users\\asaf_rs\\Desktop\\projects\\wind\\Wind_proj"
 Data_dir <- file.path(base_dir,"\\stations\\IMS")
 stations <- dir(Data_dir)
 

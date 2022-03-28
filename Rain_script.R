@@ -1,5 +1,5 @@
 
-Rain_dir <- "C:\\Users\\asaf_rs\\Desktop\\wind\\Wind_proj\\Rain"
+Rain_dir <- "C:\\Users\\asaf_rs\\Desktop\\projects\\wind\\Wind_proj\\Rain"
 rain_stations <- dir(Rain_dir)
 
 ##Create function which load all the station rain data
@@ -23,6 +23,10 @@ rain_station_data_list <- lapply(rain_stations, function(stn){
   # Now read all years of data from one station, and merge
   IMS_rain_merged <- LoadIMSRain(file.path(Rain_dir, stn), stn)
 })
+
+## Merge all of the rain list
+
+rain_data <- do.call(rbind, rain_station_data_list)
 
 #create function which makes mean for months 1,2,3 in each year
 mean_rain <- function(stn_name){
@@ -136,4 +140,7 @@ save_rain(Gat_max, rain_station_data_list[[2]])
 save_rain(Galon_max,rain_station_data_list[[1]])
 save_rain(Jovrin_max,rain_station_data_list[[4]])
 save_rain(Nativ_max,rain_station_data_list[[5]])
+
+
+
 
